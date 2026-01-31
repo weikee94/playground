@@ -86,3 +86,37 @@ article th {
 article tr:nth-child(even) {
   background: #fafafa;
 }
+
+/* Search modal styles */
+.search-backdrop {
+  animation: fadeIn 0.15s ease;
+}
+
+.search-modal {
+  animation: slideIn 0.2s ease;
+}
+
+.search-result {
+  transition: background 0.15s ease;
+}
+
+.search-result:hover,
+.search-result.selected {
+  background: #f5f0ff !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
