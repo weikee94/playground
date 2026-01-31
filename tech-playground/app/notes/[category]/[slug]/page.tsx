@@ -11,25 +11,39 @@ type Props = {
 
 // 生成静态路径
 export async function generateStaticParams() {
-  const notesDir = path.join(process.cwd(), 'notes')
-  const categories = fs.readdirSync(notesDir)
+  try {
+    const notesDir = path.join(process.cwd(), 'notes')
 
-  const paths: { category: string; slug: string }[] = []
+    // 检查 notes 目录是否存在
+    if (!fs.existsSync(notesDir)) {
+      return []
+    }
 
-  categories.forEach(category => {
-    const categoryPath = path.join(notesDir, category)
-    if (!fs.statSync(categoryPath).isDirectory()) return
+    const categories = fs.readdirSync(notesDir)
+    const paths: { category: string; slug: string }[] = []
 
-    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
-    files.forEach(file => {
-      paths.push({
-        category,
-        slug: file.replace('.md', ''),
-      })
+    categories.forEach(category => {
+      try {
+        const categoryPath = path.join(notesDir, category)
+        if (!fs.statSync(categoryPath).isDirectory()) return
+
+        const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
+        files.forEach(file => {
+          paths.push({
+            category,
+            slug: file.replace('.md', ''),
+          })
+        })
+      } catch (error) {
+        console.error(`Error reading category ${category}:`, error)
+      }
     })
-  })
 
-  return paths
+    return paths
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 // 解析 markdown

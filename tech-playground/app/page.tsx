@@ -13,46 +13,64 @@ type Note = {
 
 // 读取所有笔记
 function getNotes(): Note[] {
-  const notesDir = path.join(process.cwd(), 'notes')
-  const categories = fs.readdirSync(notesDir)
+  try {
+    const notesDir = path.join(process.cwd(), 'notes')
 
-  const notes: Note[] = []
+    // 检查 notes 目录是否存在
+    if (!fs.existsSync(notesDir)) {
+      return []
+    }
 
-  categories.forEach(category => {
-    const categoryPath = path.join(notesDir, category)
-    if (!fs.statSync(categoryPath).isDirectory()) return
+    const categories = fs.readdirSync(notesDir)
+    const notes: Note[] = []
 
-    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
+    categories.forEach(category => {
+      try {
+        const categoryPath = path.join(notesDir, category)
+        if (!fs.statSync(categoryPath).isDirectory()) return
 
-    files.forEach(file => {
-      const content = fs.readFileSync(path.join(categoryPath, file), 'utf-8')
-      const lines = content.split('\n')
+        const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
 
-      // 简单的 frontmatter 解析
-      let title = file.replace('.md', '')
-      let tags: string[] = []
-      let date = new Date().toISOString().split('T')[0]
+        files.forEach(file => {
+          try {
+            const content = fs.readFileSync(path.join(categoryPath, file), 'utf-8')
+            const lines = content.split('\n')
 
-      if (lines[0] === '---') {
-        for (let i = 1; i < lines.length; i++) {
-          if (lines[i] === '---') break
-          if (lines[i].startsWith('title:')) title = lines[i].replace('title:', '').trim()
-          if (lines[i].startsWith('tags:')) tags = lines[i].replace('tags:', '').trim().split(',').map(t => t.trim())
-          if (lines[i].startsWith('date:')) date = lines[i].replace('date:', '').trim()
-        }
+            // 简单的 frontmatter 解析
+            let title = file.replace('.md', '')
+            let tags: string[] = []
+            let date = new Date().toISOString().split('T')[0]
+
+            if (lines[0] === '---') {
+              for (let i = 1; i < lines.length; i++) {
+                if (lines[i] === '---') break
+                if (lines[i].startsWith('title:')) title = lines[i].replace('title:', '').trim()
+                if (lines[i].startsWith('tags:')) tags = lines[i].replace('tags:', '').trim().split(',').map(t => t.trim())
+                if (lines[i].startsWith('date:')) date = lines[i].replace('date:', '').trim()
+              }
+            }
+
+            notes.push({
+              slug: `${category}/${file.replace('.md', '')}`,
+              title,
+              category,
+              tags,
+              date,
+            })
+          } catch (error) {
+            console.error(`Error reading file ${file}:`, error)
+          }
+        })
+      } catch (error) {
+        console.error(`Error reading category ${category}:`, error)
       }
-
-      notes.push({
-        slug: `${category}/${file.replace('.md', '')}`,
-        title,
-        category,
-        tags,
-        date,
-      })
     })
-  })
 
-  return notes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    return notes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  } catch (error) {
+    console.error('Error reading notes:', error)
+    return []
+  }
 }
 
 export default function Home() {
@@ -89,23 +107,14 @@ export default function Home() {
           <Link
             key={note.slug}
             href={`/notes/${note.slug}`}
+            className="note-card"
             style={{
               background: 'rgba(255, 255, 255, 0.95)',
               borderRadius: '12px',
               padding: '1.5rem',
               transition: 'all 0.3s ease',
               border: '2px solid transparent',
-              cursor: 'pointer',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)'
-              e.currentTarget.style.borderColor = '#667eea'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-              e.currentTarget.style.borderColor = 'transparent'
+              display: 'block',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
