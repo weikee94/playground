@@ -6,28 +6,9 @@ date: 2026-02-01
 
 # CSS 架构读书笔记
 
-> CSS 架构分析与最佳实践总结
+本文总结了 ITCSS + BEM + AMCSS 混合架构的最佳实践，涵盖分层目录结构、主题切换、响应式设计等核心内容。
 
----
-
-## 目录
-
-- [一、项目 CSS 架构总览](#一项目-css-架构总览)
-- [二、CSS 架构最佳实践清单](#二css-架构最佳实践清单)
-  - [1. ITCSS 分层目录结构](#1️⃣-itcss-分层目录结构)
-  - [2. BEM Mixin 封装](#2️⃣-bem-mixin-封装)
-  - [3. AMCSS 属性选择器工具类](#3️⃣-amcss-属性选择器工具类)
-  - [4. Design Tokens 集中管理](#4️⃣-design-tokens-集中管理)
-  - [5. 主题切换系统](#5️⃣-主题切换系统)
-  - [6. 响应式设计 px2rem](#6️⃣-响应式设计px2rem-自动转换)
-  - [7. 常用布局 Mixin](#7️⃣-常用布局-mixin)
-  - [8. Z-index 集中管理](#8️⃣-z-index-集中管理)
-- [三、可迁移的通用原则](#三可迁移的通用原则)
-- [四、个人学习总结](#四个人学习总结)
-
----
-
-## 一、项目 CSS 架构总览
+## 项目 CSS 架构总览
 
 ### 架构风格
 
@@ -48,13 +29,9 @@ date: 2026-02-01
 | 多主题需求（default/cool/warm） | 分层架构便于主题切换 |
 | 团队协作 | Mixin 封装降低 BEM 书写成本 |
 
----
+## CSS 架构最佳实践清单
 
-## 二、CSS 架构最佳实践清单
-
----
-
-### 1️⃣ ITCSS 分层目录结构
+### ITCSS 分层目录结构
 
 #### 设计动机（Why）
 
@@ -155,9 +132,7 @@ module.exports = {
 </style>
 ```
 
----
-
-### 2️⃣ BEM Mixin 封装
+### BEM Mixin 封装
 
 #### 设计动机（Why）
 
@@ -275,9 +250,7 @@ $modifierSeparator: '--';
 .c-layout__header--active { ... }
 ```
 
----
-
-### 3️⃣ AMCSS 属性选择器工具类
+### AMCSS 属性选择器工具类
 
 #### 设计动机（Why）
 
@@ -402,9 +375,7 @@ $direction: (l left, r right, t top, b bottom);
 <div am-button="primary large">Submit</div>
 ```
 
----
-
-### 4️⃣ Design Tokens 集中管理
+### Design Tokens 集中管理
 
 #### 设计动机（Why）
 
@@ -481,9 +452,7 @@ html {
 }
 ```
 
----
-
-### 5️⃣ 主题切换系统
+### 主题切换系统
 
 #### 设计动机（Why）
 
@@ -625,9 +594,7 @@ changeTheme('cool');   // 切换到冷色主题
 changeTheme('warm');   // 切换到暖色主题
 ```
 
----
-
-### 6️⃣ 响应式设计：px2rem 自动转换
+### 响应式设计：px2rem 自动转换
 
 #### 设计动机（Why）
 
@@ -697,9 +664,7 @@ module.exports = {
 import 'lib-flexible';  // 自动设置 html 的 font-size
 ```
 
----
-
-### 7️⃣ 常用布局 Mixin
+### 常用布局 Mixin
 
 #### Mixin 速查表
 
@@ -838,9 +803,7 @@ import 'lib-flexible';  // 自动设置 html 的 font-size
 }
 ```
 
----
-
-### 8️⃣ Z-index 集中管理
+### Z-index 集中管理
 
 #### 设计动机（Why）
 
@@ -930,9 +893,7 @@ $z-layers: (
 }
 ```
 
----
-
-## 三、可迁移的通用原则
+## 可迁移的通用原则
 
 ### 架构层面
 
@@ -963,9 +924,7 @@ $z-layers: (
 | **大写 Px 规避转换** | 需要保持 1px 时用 `1Px`，PostCSS 只处理小写 px |
 | **第三方组件加黑名单** | Vant 等组件库有自己的适配方案，不应重复转换 |
 
----
-
-## 四、个人学习总结
+## 个人学习总结
 
 ### 核心收获
 
@@ -1027,8 +986,6 @@ $z-layers: (
 - `_media-queries.scss` - 响应式断点
 - `_animation.scss` - 动画生成器
 - `_z-index.scss` - 层级管理
-
----
 
 ## 附录：项目文件速查
 
