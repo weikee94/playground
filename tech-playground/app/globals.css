@@ -53,3 +53,36 @@ pre code {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   border-color: #667eea !important;
 }
+
+/* Article headings */
+article h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+  margin: 1.5rem 0 0.75rem;
+}
+
+/* Tables */
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+article th,
+article td {
+  border: 1px solid #e0e0e0;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+article th {
+  background: #f5f5f5;
+  font-weight: 600;
+  color: #333;
+}
+
+article tr:nth-child(even) {
+  background: #fafafa;
+}

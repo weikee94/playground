@@ -71,13 +71,35 @@ function parseMarkdown(content: string) {
     }
   }
 
+  // 解析表格
+  function parseTable(text: string): string {
+    const tableRegex = /\|(.+)\|\n\|[-:\s|]+\|\n((?:\|.+\|\n?)+)/g
+    return text.replace(tableRegex, (_match, headerRow, bodyRows) => {
+      const headers = headerRow.split('|').map((h: string) => h.trim()).filter(Boolean)
+      const headerHtml = headers.map((h: string) => `<th>${h}</th>`).join('')
+
+      const rows = bodyRows.trim().split('\n').map((row: string) => {
+        const cells = row.split('|').map((c: string) => c.trim()).filter(Boolean)
+        return `<tr>${cells.map((c: string) => `<td>${c}</td>`).join('')}</tr>`
+      }).join('')
+
+      return `<table><thead><tr>${headerHtml}</tr></thead><tbody>${rows}</tbody></table>`
+    })
+  }
+
   // 简单的 markdown 转 HTML (仅支持基础语法)
   let html = markdown
+
+  // 先处理表格
+  html = parseTable(html)
+
+  html = html
     // 代码块
     .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
     // 行内代码
     .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // 标题
+    // 标题 (注意顺序：从多到少)
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
@@ -92,7 +114,7 @@ function parseMarkdown(content: string) {
     // 段落
     .split('\n\n')
     .map(para => {
-      if (para.startsWith('<h') || para.startsWith('<pre') || para.startsWith('<li')) {
+      if (para.startsWith('<h') || para.startsWith('<pre') || para.startsWith('<li') || para.startsWith('<table')) {
         return para
       }
       return para.trim() ? `<p>${para.replace(/\n/g, '<br>')}</p>` : ''
