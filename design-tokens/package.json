@@ -1,0 +1,41 @@
+{
+  "name": "@weikeehaw/design-tokens",
+  "version": "1.0.0",
+  "description": "Shared design tokens for typography and color palette",
+  "main": "dist/index.css",
+  "style": "dist/index.css",
+  "types": "dist/tokens.d.ts",
+  "exports": {
+    ".": "./dist/index.css",
+    "./css": "./dist/index.css",
+    "./css/variables": "./dist/variables.css",
+    "./css/base": "./dist/base.css",
+    "./js": "./dist/tokens.js",
+    "./json": "./dist/tokens.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build:css && npm run build:js",
+    "build:css": "mkdir -p dist && cp src/*.css dist/",
+    "build:js": "node scripts/build-js.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "design-tokens",
+    "css-variables",
+    "typography",
+    "colors",
+    "design-system"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
