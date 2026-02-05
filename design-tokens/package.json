@@ -1,5 +1,5 @@
 {
-  "name": "@weikeehaw/design-tokens",
+  "name": "@weikee/design-tokens",
   "version": "1.0.0",
   "description": "Shared design tokens for typography and color palette",
   "main": "dist/index.css",

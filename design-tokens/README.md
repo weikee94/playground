@@ -5,7 +5,7 @@ Shared design tokens for typography and color palette.
 ## Installation
 
 ```bash
-npm install @weikeehaw/design-tokens
+npm install @weikee/design-tokens
 ```
 
 ## Usage
@@ -15,26 +15,26 @@ npm install @weikeehaw/design-tokens
 Import the full package (variables + base styles):
 
 ```css
-@import '@weikeehaw/design-tokens';
+@import '@weikee/design-tokens';
 ```
 
 Or import only what you need:
 
 ```css
 /* Only CSS variables */
-@import '@weikeehaw/design-tokens/css/variables';
+@import '@weikee/design-tokens/css/variables';
 
 /* Only base styles (requires variables) */
-@import '@weikeehaw/design-tokens/css/base';
+@import '@weikee/design-tokens/css/base';
 ```
 
 ### JavaScript/TypeScript
 
 ```js
-import tokens from '@weikeehaw/design-tokens/js';
+import tokens from '@weikee/design-tokens/js';
 
 // Or import specific categories
-import { color, fontSize } from '@weikeehaw/design-tokens/js';
+import { color, fontSize } from '@weikee/design-tokens/js';
 
 console.log(color.primary); // '#4D5382'
 console.log(fontSize.base); // '16px'
@@ -43,7 +43,7 @@ console.log(fontSize.base); // '16px'
 ### JSON
 
 ```js
-import tokens from '@weikeehaw/design-tokens/json';
+import tokens from '@weikee/design-tokens/json';
 ```
 
 ## Tokens
