@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@weikee/form-core — Demo</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Form Core — Proxy State Demo</h1>
+      <p class="subtitle">
+        Framework-agnostic form state management with Proxy-based subscription
+        tracking.
+      </p>
+
+      <div class="layout">
+        <section class="form-section">
+          <h2>Form</h2>
+          <form id="demo-form" autocomplete="off">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" type="text" data-field="name" />
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" data-field="email" />
+            </div>
+            <div class="field">
+              <label for="message">Message</label>
+              <textarea id="message" data-field="message" rows="3"></textarea>
+            </div>
+            <div class="actions">
+              <button type="button" id="reset-btn" class="btn">Reset</button>
+              <button type="button" id="snapshot-btn" class="btn btn-primary">
+                getValues()
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="log-section">
+          <h2>Subscription Log</h2>
+          <p class="hint">
+            Type in the form fields — each change is tracked via Proxy and
+            notified to subscribers.
+          </p>
+          <div id="log" class="log"></div>
+        </section>
+      </div>
+
+      <section class="snapshot-section hidden" id="snapshot-section">
+        <h2>Values Snapshot</h2>
+        <pre id="snapshot"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
