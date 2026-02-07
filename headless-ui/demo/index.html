@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@weikee/headless-ui — Modal Demo</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Headless UI — Modal</h1>
+      <p class="subtitle">
+        Framework-agnostic modal with focus trapping, keyboard navigation, and
+        ARIA attributes.
+      </p>
+
+      <section class="features">
+        <h2>Features</h2>
+        <ul>
+          <li><kbd>Escape</kbd> to close</li>
+          <li><kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> focus trapping</li>
+          <li>Backdrop click to close</li>
+          <li>Body scroll lock</li>
+          <li>ARIA dialog attributes</li>
+          <li>Focus restoration to trigger</li>
+        </ul>
+      </section>
+
+      <button id="open-btn" type="button" class="btn btn-primary">
+        Open Modal
+      </button>
+    </main>
+
+    <!-- Backdrop -->
+    <div id="modal-backdrop" class="backdrop hidden"></div>
+
+    <!-- Modal Panel -->
+    <div id="modal-panel" class="modal-panel hidden">
+      <h2 id="modal-title">Example Modal</h2>
+      <p id="modal-desc">
+        Try pressing <kbd>Tab</kbd> to cycle through focusable elements,
+        <kbd>Escape</kbd> to close, or click the backdrop.
+      </p>
+
+      <label for="demo-input">Text input:</label>
+      <input id="demo-input" type="text" placeholder="Focus lands here..." />
+
+      <div class="modal-actions">
+        <button id="close-btn" type="button" class="btn">Close</button>
+        <button type="button" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
