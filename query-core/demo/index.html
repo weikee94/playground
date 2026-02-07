@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@weikee/query-core — Demo</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Query Core — State Machine Demo</h1>
+      <p class="subtitle">
+        Minimal TanStack Query-inspired async state manager with cache
+        timestamps.
+      </p>
+
+      <div class="layout">
+        <section class="control-section">
+          <h2>Controls</h2>
+          <div class="field">
+            <label for="stale-time">staleTime (ms)</label>
+            <input id="stale-time" type="number" value="5000" step="1000" min="0" />
+          </div>
+          <div class="field">
+            <label for="delay">Simulated latency (ms)</label>
+            <input id="delay" type="number" value="1000" step="500" min="0" />
+          </div>
+          <div class="field">
+            <label>
+              <input id="should-fail" type="checkbox" />
+              Simulate error
+            </label>
+          </div>
+          <div class="actions">
+            <button id="fetch-btn" type="button" class="btn btn-primary">
+              query.fetch()
+            </button>
+            <button id="new-btn" type="button" class="btn">
+              New Query
+            </button>
+          </div>
+        </section>
+
+        <section class="state-section">
+          <h2>QueryState</h2>
+          <div class="state-card">
+            <div class="state-row">
+              <span class="state-label">status</span>
+              <span id="s-status" class="state-value badge">idle</span>
+            </div>
+            <div class="state-row">
+              <span class="state-label">data</span>
+              <span id="s-data" class="state-value">undefined</span>
+            </div>
+            <div class="state-row">
+              <span class="state-label">error</span>
+              <span id="s-error" class="state-value">undefined</span>
+            </div>
+            <div class="state-row">
+              <span class="state-label">dataUpdatedAt</span>
+              <span id="s-updated" class="state-value">undefined</span>
+            </div>
+            <div class="state-row">
+              <span class="state-label">isFresh</span>
+              <span id="s-fresh" class="state-value">false</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="log-section">
+        <h2>Transition Log</h2>
+        <div id="log" class="log"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
