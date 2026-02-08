@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { router, publicProcedure } from '../trpc';
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { createBookmarkSchema } from '@/lib/schemas';
 import type { Bookmark } from '@/lib/schemas';
 
 export const bookmarkRouter = router({
   list: publicProcedure.query(async () => {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('bookmarks')
       .select('*')
       .order('created_at', { ascending: false });
@@ -18,7 +18,7 @@ export const bookmarkRouter = router({
   create: publicProcedure
     .input(createBookmarkSchema)
     .mutation(async ({ input }) => {
-      const { data, error } = await supabase
+      const { data, error } = await getSupabase()
         .from('bookmarks')
         .insert({
           title: input.title,
@@ -35,7 +35,7 @@ export const bookmarkRouter = router({
   delete: publicProcedure
     .input(z.object({ id: z.string().uuid() }))
     .mutation(async ({ input }) => {
-      const { error } = await supabase
+      const { error } = await getSupabase()
         .from('bookmarks')
         .delete()
         .eq('id', input.id);
