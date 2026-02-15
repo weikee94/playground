@@ -38,7 +38,7 @@ export interface ModelConfig {
   };
 }
 
-export interface Record {
+export interface DataRecord {
   id: number;
   createdAt: string;
   [key: string]: unknown;

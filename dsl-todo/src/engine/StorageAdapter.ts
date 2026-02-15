@@ -1,4 +1,4 @@
-import type { ModelConfig, Record } from './types';
+import type { ModelConfig, DataRecord } from './types';
 
 export class StorageAdapter {
   private key: string;
@@ -7,14 +7,14 @@ export class StorageAdapter {
     this.key = model.storage.key;
   }
 
-  list(): Record[] {
+  list(): DataRecord[] {
     const raw = localStorage.getItem(this.key);
     return raw ? JSON.parse(raw) : [];
   }
 
-  create(item: Omit<Record, 'id' | 'createdAt'>): Record {
+  create(item: Omit<DataRecord, 'id' | 'createdAt'>): DataRecord {
     const items = this.list();
-    const newItem: Record = {
+    const newItem: DataRecord = {
       ...item,
       id: Date.now(),
       createdAt: new Date().toISOString(),
@@ -24,7 +24,7 @@ export class StorageAdapter {
     return newItem;
   }
 
-  update(id: number, updates: Partial<Record>): Record {
+  update(id: number, updates: Partial<DataRecord>): DataRecord {
     const items = this.list();
     const idx = items.findIndex((i) => i.id === id);
     if (idx === -1) throw new Error('Item not found');
@@ -38,7 +38,7 @@ export class StorageAdapter {
     localStorage.setItem(this.key, JSON.stringify(items));
   }
 
-  filter(conditions: Record<string, string>): Record[] {
+  filter(conditions: Record<string, string>): DataRecord[] {
     return this.list().filter((item) =>
       Object.entries(conditions).every(
         ([key, value]) => !value || item[key] === value,

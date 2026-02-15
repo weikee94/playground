@@ -1,5 +1,5 @@
 import type { DSLParser } from './DSLParser';
-import type { Field, Record } from './types';
+import type { Field, DataRecord } from './types';
 
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -13,7 +13,7 @@ const PRIORITY_COLORS: Record<string, string> = {
   high: 'bg-red-100 text-red-800',
 };
 
-function formatCell(item: Record, field: Field): string {
+function formatCell(item: DataRecord, field: Field): string {
   const value = item[field.name];
   if (value == null || value === '') return '-';
 
@@ -29,10 +29,10 @@ function formatCell(item: Record, field: Field): string {
 
 interface Props {
   parser: DSLParser;
-  data: Record[];
-  onEdit: (item: Record) => void;
+  data: DataRecord[];
+  onEdit: (item: DataRecord) => void;
   onDelete: (id: number) => void;
-  onToggleStatus: (item: Record) => void;
+  onToggleStatus: (item: DataRecord) => void;
 }
 
 export function TableGenerator({ parser, data, onEdit, onDelete, onToggleStatus }: Props) {

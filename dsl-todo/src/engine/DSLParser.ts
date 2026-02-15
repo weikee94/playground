@@ -1,7 +1,10 @@
 import type { Field, ModelConfig } from './types';
 
 export class DSLParser {
-  constructor(private model: ModelConfig) {}
+  private model: ModelConfig;
+  constructor(model: ModelConfig) {
+    this.model = model;
+  }
 
   getFields(): Field[] {
     return this.model.fields;

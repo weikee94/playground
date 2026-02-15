@@ -4,7 +4,7 @@ import { StorageAdapter } from '../engine/StorageAdapter';
 import { FormGenerator } from '../engine/FormGenerator';
 import { TableGenerator } from '../engine/TableGenerator';
 import { Modal } from './Modal';
-import type { ModelConfig, Record } from '../engine/types';
+import type { ModelConfig, DataRecord } from '../engine/types';
 
 interface Props {
   model: ModelConfig;
@@ -14,10 +14,10 @@ export function ModelPage({ model }: Props) {
   const parser = useMemo(() => new DSLParser(model), [model]);
   const storage = useMemo(() => new StorageAdapter(model), [model]);
 
-  const [data, setData] = useState<Record[]>([]);
+  const [data, setData] = useState<DataRecord[]>([]);
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [showCreate, setShowCreate] = useState(false);
-  const [editing, setEditing] = useState<Record | null>(null);
+  const [editing, setEditing] = useState<DataRecord | null>(null);
 
   useEffect(() => {
     setData(storage.list());
@@ -35,7 +35,7 @@ export function ModelPage({ model }: Props) {
   const reload = () => setData(storage.list());
 
   const handleCreate = (formData: Record<string, unknown>) => {
-    storage.create(formData as Omit<Record, 'id' | 'createdAt'>);
+    storage.create(formData as Omit<DataRecord, 'id' | 'createdAt'>);
     reload();
     setShowCreate(false);
   };
@@ -53,7 +53,7 @@ export function ModelPage({ model }: Props) {
     reload();
   };
 
-  const handleToggleStatus = (item: Record) => {
+  const handleToggleStatus = (item: DataRecord) => {
     storage.update(item.id, {
       status: item.status === 'done' ? 'pending' : 'done',
     });
@@ -88,7 +88,7 @@ export function ModelPage({ model }: Props) {
               <select
                 value={filters[field.name] ?? ''}
                 onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, [field.name]: e.target.value }))
+                  setFilters((prev: Record<string, string>) => ({ ...prev, [field.name]: e.target.value }))
                 }
                 className="px-3 py-1.5 border border-gray-300 rounded-md text-sm"
               >
