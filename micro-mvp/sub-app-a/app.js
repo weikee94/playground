@@ -2,13 +2,13 @@
 
 let root = null;
 let unsubTheme = null;
+const fe = window.__microFE__;
 
 export function mount(container) {
   console.log('[App A] Mounting...');
 
   root = document.createElement('div');
 
-  // 样式写在 Shadow DOM 内部 → 完全隔离，不影响主应用和其他子应用
   const style = document.createElement('style');
   style.textContent = `
     :host { display: block; }
@@ -33,7 +33,6 @@ export function mount(container) {
       border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s;
     }
     .button:hover { background: #2563eb; }
     .section { margin-top: 20px; }
@@ -52,12 +51,14 @@ export function mount(container) {
       flex-wrap: wrap;
     }
     .state-btn {
-      padding: 6px 14px;
+      padding: 8px 16px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
-      background: white;
+      background: #ffffff;
+      color: #374151;
       cursor: pointer;
       font-size: 13px;
+      font-family: system-ui, sans-serif;
     }
     .state-btn:hover { background: #f3f4f6; }
     .dark .state-btn { background: #334155; color: #e2e8f0; border-color: #475569; }
@@ -104,22 +105,20 @@ export function mount(container) {
   };
 
   // 修改全局状态
-  root.querySelector('#btn-user-a').onclick = () => MiniSPA.setState('user', 'Alice');
-  root.querySelector('#btn-user-b').onclick = () => MiniSPA.setState('user', 'Bob');
+  root.querySelector('#btn-user-a').onclick = () => fe.setState('user', 'Alice');
+  root.querySelector('#btn-user-b').onclick = () => fe.setState('user', 'Bob');
   root.querySelector('#btn-theme').onclick = () => {
-    const current = MiniSPA.getState('theme');
-    MiniSPA.setState('theme', current === 'light' ? 'dark' : 'light');
+    const current = fe.getState('theme');
+    fe.setState('theme', current === 'light' ? 'dark' : 'light');
   };
 
   // 订阅 theme 状态
-  unsubTheme = MiniSPA.subscribe('theme', (theme) => {
+  unsubTheme = fe.subscribe('theme', (theme) => {
     const card = root.querySelector('#card-a');
     card.classList.toggle('dark', theme === 'dark');
   });
 
-  // 初始化 theme
-  const currentTheme = MiniSPA.getState('theme');
-  if (currentTheme === 'dark') {
+  if (fe.getState('theme') === 'dark') {
     root.querySelector('#card-a').classList.add('dark');
   }
 

@@ -1,19 +1,20 @@
 // main-app/app.js — 注册子应用 + 启动框架
+const fe = window.__microFE__;
 
 // 初始化全局状态
-MiniSPA.setState('user', null);
-MiniSPA.setState('theme', 'light');
+fe.setState('user', null);
+fe.setState('theme', 'light');
 
 // 监听全局状态 → 更新顶栏
-MiniSPA.subscribe('user', (val) => {
+fe.subscribe('user', (val) => {
   document.getElementById('state-user').textContent = val ? `"${val}"` : 'null';
 });
-MiniSPA.subscribe('theme', (val) => {
+fe.subscribe('theme', (val) => {
   document.getElementById('state-theme').textContent = val;
 });
 
 // 注册首页
-MiniSPA.registerApp({
+fe.registerApp({
   name: 'home',
   activeWhen: (path) => path === '/',
   useShadow: false,
@@ -22,7 +23,7 @@ MiniSPA.registerApp({
       mount: (container) => {
         container.innerHTML = `
           <div style="text-align:center; padding:60px 20px;">
-            <h2 style="font-size:24px; color:#1a1a2e;">Mini SPA Framework</h2>
+            <h2 style="font-size:24px; color:#1a1a2e;">Micro Frontend MVP</h2>
             <p style="color:#666; margin-top:12px; font-size:14px;">
               路由劫持 + 动态加载 + 生命周期 + CSS隔离(Shadow DOM) + 状态管理
             </p>
@@ -41,7 +42,7 @@ MiniSPA.registerApp({
 });
 
 // 注册 App A
-MiniSPA.registerApp({
+fe.registerApp({
   name: 'app-a',
   activeWhen: '/app-a',
   useShadow: true,
@@ -49,7 +50,7 @@ MiniSPA.registerApp({
 });
 
 // 注册 App B
-MiniSPA.registerApp({
+fe.registerApp({
   name: 'app-b',
   activeWhen: '/app-b',
   useShadow: true,
@@ -57,7 +58,7 @@ MiniSPA.registerApp({
 });
 
 // 启动
-MiniSPA.start();
+fe.start();
 
 // 导航高亮
 function updateNav() {

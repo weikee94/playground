@@ -4,6 +4,7 @@ let root = null;
 let timer = null;
 let unsubTheme = null;
 let unsubUser = null;
+const fe = window.__microFE__;
 
 export function mount(container) {
   console.log('[App B] Mounting...');
@@ -34,7 +35,6 @@ export function mount(container) {
       max-width: 320px;
       font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
     }
     .input:focus { border-color: #dc2626; }
     .dark .input { background: #334155; color: #e2e8f0; border-color: #f87171; }
@@ -93,7 +93,7 @@ export function mount(container) {
       <div class="info">
         <strong>状态隔离验证:</strong><br/>
         App A 和 App B 各自有独立的局部状态（count / input / timer）<br/>
-        全局状态 (user, theme) 通过 MiniSPA.setState/subscribe 共享
+        全局状态 (user, theme) 通过 __microFE__.setState/subscribe 共享
       </div>
     </div>
   `;
@@ -118,18 +118,18 @@ export function mount(container) {
 
   // 订阅全局状态
   const userEl = root.querySelector('#user-val');
-  const currentUser = MiniSPA.getState('user');
+  const currentUser = fe.getState('user');
   userEl.textContent = currentUser ? `"${currentUser}"` : 'null';
 
-  unsubUser = MiniSPA.subscribe('user', (val) => {
+  unsubUser = fe.subscribe('user', (val) => {
     userEl.textContent = val ? `"${val}"` : 'null';
   });
 
-  unsubTheme = MiniSPA.subscribe('theme', (theme) => {
+  unsubTheme = fe.subscribe('theme', (theme) => {
     root.querySelector('#card-b').classList.toggle('dark', theme === 'dark');
   });
 
-  if (MiniSPA.getState('theme') === 'dark') {
+  if (fe.getState('theme') === 'dark') {
     root.querySelector('#card-b').classList.add('dark');
   }
 
@@ -139,13 +139,11 @@ export function mount(container) {
 export function unmount() {
   console.log('[App B] Unmounting...');
 
-  // 清理定时器
   if (timer) {
     clearInterval(timer);
     timer = null;
   }
 
-  // 取消状态订阅
   if (unsubTheme) unsubTheme();
   if (unsubUser) unsubUser();
   unsubTheme = null;

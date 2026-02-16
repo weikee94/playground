@@ -1,7 +1,7 @@
 // framework/mini-spa.js
 // 微前端框架 MVP — 路由劫持 + 动态加载 + 生命周期 + CSS隔离(Shadow DOM) + 状态管理
 
-class MiniSPA {
+class MicroFE {
   constructor() {
     this.apps = [];
     this.currentApp = null;
@@ -17,7 +17,7 @@ class MiniSPA {
       activeWhen: config.activeWhen,
       loadApp: config.app,
       container: config.container || '#app',
-      useShadow: config.useShadow !== false, // 默认开启 Shadow DOM
+      useShadow: config.useShadow !== false,
       instance: null,
       shadowRoot: null,
     });
@@ -54,33 +54,40 @@ class MiniSPA {
   // ==================== 生命周期 ====================
 
   async _mount(app) {
-    if (!app.instance) {
-      console.log(`[MiniSPA] Loading ${app.name}...`);
-      app.instance = await app.loadApp();
-    }
+    try {
+      if (!app.instance) {
+        console.log(`[MicroFE] Loading ${app.name}...`);
+        app.instance = await app.loadApp();
+      }
 
-    console.log(`[MiniSPA] Mounting ${app.name}`);
-    const host = document.querySelector(app.container);
+      console.log(`[MicroFE] Mounting ${app.name}`);
+      const host = document.querySelector(app.container);
 
-    let mountTarget;
-    if (app.useShadow) {
-      // CSS 隔离：用 Shadow DOM
-      const wrapper = document.createElement('div');
-      wrapper.id = `micro-${app.name}`;
-      host.appendChild(wrapper);
-      app.shadowRoot = wrapper.attachShadow({ mode: 'open' });
-      mountTarget = app.shadowRoot;
-    } else {
-      mountTarget = host;
-    }
+      let mountTarget;
+      if (app.useShadow) {
+        const wrapper = document.createElement('div');
+        wrapper.id = `micro-${app.name}`;
+        host.appendChild(wrapper);
+        app.shadowRoot = wrapper.attachShadow({ mode: 'open' });
+        mountTarget = app.shadowRoot;
+      } else {
+        mountTarget = host;
+      }
 
-    if (app.instance.mount) {
-      await app.instance.mount(mountTarget);
+      if (app.instance.mount) {
+        await app.instance.mount(mountTarget);
+      }
+    } catch (err) {
+      console.error(`[MicroFE] Mount failed for ${app.name}:`, err);
+      const host = document.querySelector(app.container);
+      if (host) {
+        host.innerHTML = `<div style="color:red; padding:20px;">Load failed: ${err.message}</div>`;
+      }
     }
   }
 
   async _unmount(app) {
-    console.log(`[MiniSPA] Unmounting ${app.name}`);
+    console.log(`[MicroFE] Unmounting ${app.name}`);
     if (app.instance?.unmount) {
       await app.instance.unmount();
     }
@@ -108,4 +115,4 @@ class MiniSPA {
   }
 }
 
-window.MiniSPA = new MiniSPA();
+window.__microFE__ = new MicroFE();
