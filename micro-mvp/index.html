@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini SPA - Micro Frontend MVP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+
+    .header {
+      background: #1a1a2e;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 { font-size: 18px; font-weight: 600; }
+
+    .nav { display: flex; gap: 4px; }
+    .nav a {
+      color: #ccc;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .nav a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .nav a.active { background: #3b82f6; color: white; }
+
+    .state-bar {
+      background: #1a1a2e;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 8px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 12px;
+      color: #999;
+    }
+    .state-bar span { color: #fbbf24; font-weight: 500; }
+
+    #app {
+      max-width: 800px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+
+    /* 这些样式只影响主应用，不会渗透到 Shadow DOM 里 */
+    .button { background: green !important; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Mini SPA Framework</h1>
+    <nav class="nav">
+      <a href="#/">Home</a>
+      <a href="#/app-a">App A</a>
+      <a href="#/app-b">App B</a>
+    </nav>
+  </div>
+
+  <!-- 全局状态展示栏 -->
+  <div class="state-bar">
+    Global State:
+    <div>user = <span id="state-user">null</span></div>
+    <div>theme = <span id="state-theme">light</span></div>
+  </div>
+
+  <!-- 子应用容器 -->
+  <div id="app"></div>
+
+  <script src="./framework/mini-spa.js"></script>
+  <script type="module" src="./main-app/app.js"></script>
+</body>
+</html>
