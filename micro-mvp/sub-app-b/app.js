@@ -1,12 +1,11 @@
-// sub-app-b/app.js — 输入框子应用（Shadow DOM CSS 隔离 + 定时器清理 + 状态订阅）
+// sub-app-b/app.js — 输入框子应用（Shadow DOM + 沙箱自动清理定时器 + 状态订阅）
 
 let root = null;
-let timer = null;
 let unsubTheme = null;
 let unsubUser = null;
 const fe = window.__microFE__;
 
-export function mount(container) {
+export function mount(container, sandbox) {
   console.log('[App B] Mounting...');
 
   root = document.createElement('div');
@@ -62,12 +61,22 @@ export function mount(container) {
       font-size: 13px;
     }
     .dark .user-display { background: #78350f; }
+    .sandbox-demo {
+      margin-top: 16px;
+      padding: 12px;
+      background: #fefce8;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .dark .sandbox-demo { background: #713f12; }
+    code { background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
   `;
 
   root.innerHTML = `
     <div class="card" id="card-b">
       <h2>App B (Input)</h2>
-      <p>独立子应用 — 定时器清理 + 状态订阅</p>
+      <p>沙箱自动清理定时器 + 状态订阅</p>
 
       <div class="section">
         <input class="input" id="input-b" type="text" placeholder="试试输入..." />
@@ -79,7 +88,6 @@ export function mount(container) {
       <div class="section">
         <div class="timer-bar">
           运行时间: <strong id="timer-val">0</strong> 秒
-          （切换路由后会自动清理）
         </div>
       </div>
 
@@ -90,10 +98,11 @@ export function mount(container) {
         </div>
       </div>
 
-      <div class="info">
-        <strong>状态隔离验证:</strong><br/>
-        App A 和 App B 各自有独立的局部状态（count / input / timer）<br/>
-        全局状态 (user, theme) 通过 __microFE__.setState/subscribe 共享
+      <div class="sandbox-demo">
+        <strong>沙箱自动清理验证:</strong><br/>
+        定时器通过 <code>sandbox.patchInterval()</code> 注册<br/>
+        切换路由时沙箱自动 <code>clearInterval</code> → 不需要手动清理!<br/>
+        打开 Console 看 unmount 日志
       </div>
     </div>
   `;
@@ -108,13 +117,17 @@ export function mount(container) {
     output.textContent = e.target.value || '...';
   };
 
-  // 定时器（unmount 时必须清理）
+  // ====== 沙箱演示：定时器自动清理 ======
+  // 用 sandbox.patchInterval 代替 setInterval
+  // 切换路由时沙箱会自动 clearInterval，不需要手动清理！
   let seconds = 0;
   const timerEl = root.querySelector('#timer-val');
-  timer = setInterval(() => {
-    seconds++;
-    timerEl.textContent = seconds;
-  }, 1000);
+  if (sandbox) {
+    sandbox.patchInterval(() => {
+      seconds++;
+      if (timerEl) timerEl.textContent = seconds;
+    }, 1000);
+  }
 
   // 订阅全局状态
   const userEl = root.querySelector('#user-val');
@@ -138,17 +151,12 @@ export function mount(container) {
 
 export function unmount() {
   console.log('[App B] Unmounting...');
-
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-  }
-
+  // 注意：不再需要手动 clearInterval！沙箱会自动清理
+  // 但状态订阅仍需手动取消（这是框架级别的，不是 window 副作用）
   if (unsubTheme) unsubTheme();
   if (unsubUser) unsubUser();
   unsubTheme = null;
   unsubUser = null;
   root = null;
-
   return Promise.resolve();
 }

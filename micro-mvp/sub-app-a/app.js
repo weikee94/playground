@@ -1,11 +1,20 @@
-// sub-app-a/app.js — 计数器子应用（Shadow DOM CSS 隔离 + 全局状态）
+// sub-app-a/app.js — 计数器子应用（Shadow DOM + Proxy 沙箱 + 全局状态）
 
 let root = null;
 let unsubTheme = null;
 const fe = window.__microFE__;
 
-export function mount(container) {
+export function mount(container, sandbox) {
   console.log('[App A] Mounting...');
+
+  // ====== 沙箱演示：写入全局变量 ======
+  // 通过 sandbox.proxy 写入，不会污染真 window
+  if (sandbox) {
+    sandbox.proxy.appAVersion = '1.0.0';
+    sandbox.proxy.appASecret = 'only-in-sandbox';
+    console.log('[App A] 写入 sandbox.proxy.appAVersion =', sandbox.proxy.appAVersion);
+    console.log('[App A] 真 window.appAVersion =', window.appAVersion); // undefined!
+  }
 
   root = document.createElement('div');
 
@@ -63,12 +72,22 @@ export function mount(container) {
     .state-btn:hover { background: #f3f4f6; }
     .dark .state-btn { background: #334155; color: #e2e8f0; border-color: #475569; }
     .dark .state-btn:hover { background: #475569; }
+    .sandbox-demo {
+      margin-top: 16px;
+      padding: 12px;
+      background: #fefce8;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .dark .sandbox-demo { background: #713f12; }
+    code { background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
   `;
 
   root.innerHTML = `
     <div class="card" id="card-a">
       <h2>App A (Counter)</h2>
-      <p>独立子应用 — Shadow DOM CSS 隔离</p>
+      <p>Shadow DOM CSS 隔离 + Proxy 沙箱</p>
 
       <div class="section">
         <button class="button" id="btn-count">
@@ -85,6 +104,13 @@ export function mount(container) {
         </div>
       </div>
 
+      <div class="sandbox-demo">
+        <strong>Proxy 沙箱验证:</strong><br/>
+        <code>sandbox.proxy.appAVersion = "1.0.0"</code> → 写入假 window<br/>
+        <code>window.appAVersion</code> → <strong id="real-window-val">检查中...</strong><br/>
+        = 真 window 没有被污染
+      </div>
+
       <div class="info">
         <strong>CSS 隔离验证:</strong><br/>
         主应用有 <code>.button { background: green !important }</code><br/>
@@ -95,6 +121,10 @@ export function mount(container) {
 
   container.appendChild(style);
   container.appendChild(root);
+
+  // 显示真 window 的值
+  root.querySelector('#real-window-val').textContent =
+    window.appAVersion === undefined ? 'undefined (未污染!)' : window.appAVersion;
 
   // 计数器
   let count = 0;
